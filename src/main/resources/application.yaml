@@ -1,12 +1,34 @@
 spring:
-  h2:
-    console.enabled: true
-  datasource:
-    url: jdbc:h2:mem:mydb
-    username: sa
-    password: password
-    driverClassName: org.h2.Driver
+
   jpa:
-    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    database: POSTGRESQL
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        # Allows Hibernate to generate SQL optimized for a particular DBMS
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
     hibernate:
       ddl-auto: create-drop
+      # Naming strategy
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+
+  # Database configuration
+  datasource:
+    platform: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/movies}
+    username: ${SPRING_DATASOURCE_USERNAME:movies}
+    password: ${SPRING_DATASOURCE_PASSWORD:movies}
+    driverClassName: org.postgresql.Driver
+    # Keep the connection alive if idle for a long time (needed in production)
+    testWhileIdle: true
+    validationQuery: SELECT 1
+
+  # Enable health check
+  management:
+    endpoint:
+      health:
+        enabled: true
