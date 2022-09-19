@@ -3,8 +3,9 @@
 FROM openjdk:8-jdk-alpine AS build
 WORKDIR /app
 COPY . /app
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build
+RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build -x test
 RUN rm build/libs/*plain.jar
+ENV DOCKER_HOST=tcp://host.docker.internal:2375
 RUN mkdir -p build/dependency && (cd build/dependency && jar -xf ../libs/*.jar)
 
 FROM openjdk:8-jdk-alpine
