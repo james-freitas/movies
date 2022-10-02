@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgre
+spec:
+  selector:
+    matchLabels:
+      app: postgre
+  template:
+    metadata:
+      labels:
+        app: postgre
+    spec:
+      containers:
+        - name: postgre
+          image: postgres:14.3
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "movies"
+            - name: POSTGRES_USER
+              value: "movies"
+            - name: POSTGRES_DB
+              value: "movies"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgre
+spec:
+  selector:
+    app: postgre
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movies
+spec:
+  selector:
+    matchLabels:
+      app: movies
+  template:
+    metadata:
+      labels:
+        app: movies
+    spec:
+      containers:
+        - name: movies
+          image: jamesfrj/movies:v1
+          env:
+          - name: SPRING_DATASOURCE_USERNAME
+            value: "movies"
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: "movies"
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql://postgre:5432/movies?useSSL=false"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: movies
+spec:
+  selector:
+    app: movies
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30000
+  type: NodePort
