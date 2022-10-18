@@ -17,6 +17,7 @@
  - Use `password` for Password
  
 #### Docker
+ - Multistage dockerfile created
 
 ###### References
  - [Spring Boot and Docker](https://spring.io/guides/topicals/spring-boot-docker/)
