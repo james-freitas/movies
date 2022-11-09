@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movies
+spec:
+  selector:
+    matchLabels:
+      app: movies
+  template:
+    metadata:
+      labels:
+        app: movies
+    spec:
+      containers:
+        - name: movies
+          image: jamesfrj/movies:v1
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "movies"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "movies"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgre:5432/movies?useSSL=false"
